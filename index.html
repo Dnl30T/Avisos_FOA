@@ -91,6 +91,134 @@
           background-position: -200% 0;
         }
       }
+
+      /* Filter Collapse Animation */
+      .filter-content {
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+        max-height: 0;
+        opacity: 0;
+      }
+
+      .filter-content.expanded {
+        max-height: 300px;
+        opacity: 1;
+      }
+
+      /* Filter Toggle Icon Animation */
+      .filter-toggle-icon {
+        transition: transform 0.3s ease;
+      }
+
+      .filter-toggle-icon.rotated {
+        transform: rotate(-180deg);
+      }
+
+      /* Active Filter Flags */
+      .filter-flag {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        font-size: 0.875rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        animation: flagFadeIn 0.3s ease-out;
+      }
+
+      .filter-flag:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      .filter-flag-remove {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .filter-flag-remove:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .filter-flag-remove i {
+        font-size: 14px;
+      }
+
+      /* Category-specific flag colors */
+      .filter-flag.categoria-provas {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+
+      .filter-flag.categoria-trabalhos {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      }
+
+      .filter-flag.categoria-comunicados {
+        background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      }
+
+      .filter-flag.categoria-noticias {
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
+
+      .filter-flag.categoria-divulgacao {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+
+      /* Urgency-specific flag colors */
+      .filter-flag.urgencia-alta {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+      }
+
+      .filter-flag.urgencia-media {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+      }
+
+      .filter-flag.urgencia-baixa {
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
+
+      /* Dependency flag */
+      .filter-flag.dependencia {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+      }
+
+      /* Flag Animation */
+      @keyframes flagFadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .flag-remove-animation {
+        animation: flagFadeOut 0.2s ease-out forwards;
+      }
+
+      @keyframes flagFadeOut {
+        from {
+          opacity: 1;
+          transform: scale(1);
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+      }
     </style>
   </head>
   <body class="bg-gray-50 min-h-screen">
@@ -119,104 +247,135 @@
 
     <!-- Filters -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 class="text-lg font-semibold mb-4">Filtros</h2>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <!-- Categoria -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Categoria</label
+      <div class="bg-white rounded-lg shadow mb-6">
+        <!-- Filter Header -->
+        <div class="p-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <button 
+              id="toggleFilters" 
+              class="flex items-center space-x-2 text-lg font-semibold text-gray-800 hover:text-gray-600 transition-colors"
             >
-            <select
-              id="filterCategoria"
-              class="w-full border border-gray-300 rounded-md px-3 py-2"
-            >
-              <option value="">Todas</option>
-              <option value="provas">Provas</option>
-              <option value="trabalhos">Trabalhos</option>
-              <option value="comunicados">Comunicados</option>
-              <option value="noticias">Notícias</option>
-              <option value="divulgacao">Divulgação</option>
-            </select>
-          </div>
-
-          <!-- Urgência -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Urgência</label
-            >
-            <select
-              id="filterUrgencia"
-              class="w-full border border-gray-300 rounded-md px-3 py-2"
-            >
-              <option value="">Todas</option>
-              <option value="alta">Alta</option>
-              <option value="media">Média</option>
-              <option value="baixa">Baixa</option>
-            </select>
-          </div>
-
-          <!-- Matéria -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Matéria</label
-            >
-            <select
-              id="filterMateria"
-              class="w-full border border-gray-300 rounded-md px-3 py-2"
-            >
-              <option value="">Selecione a matéria</option>
-              <option value="PROJETOS_INTEGRADOS_IV">
-                PROJETOS INTEGRADOS IV
-              </option>
-              <option value="PROJETO_FINAL_DE_CURSO_I">
-                PROJETO FINAL DE CURSO I
-              </option>
-              <option value="PROJETO_DE_VIDA_E_CARREIRA">
-                PROJETO DE VIDA E CARREIRA
-              </option>
-              <option value="INTELIGENCIA_ARTIFICIAL">
-                INTELIGÊNCIA ARTIFICIAL
-              </option>
-              <option value="AUDITORIA_SEGURANCA_E_PROTECAO_DA_INFORMACAO">
-                AUDITORIA, SEGURANÇA E PROTEÇÃO DA INFORMAÇÃO
-              </option>
-              <option value="ANALISE_ECONOMICA_E_FINANCEIRA_DE_PROJETOS">
-                ANÁLISE ECONÔMICA E FINANCEIRA DE PROJETOS
-              </option>
-              <option value="TOPICOS_ESPECIAIS_EM_SISTEMAS_DE_INFORMACAO_II">
-                TÓPICOS ESPECIAIS EM SISTEMAS DE INFORMAÇÃO II
-              </option>
-              <option value="GERAL">Geral</option>
-            </select>
-          </div>
-
-          <!-- Dependência -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Dependência</label
-            >
-            <select
-              id="filterDependencia"
-              class="w-full border border-gray-300 rounded-md px-3 py-2"
-            >
-              <option value="">Todos</option>
-              <option value="true">Dependência</option>
-              <option value="false">Regular</option>
-            </select>
+              <i id="filterToggleIcon" class="material-icons transition-transform rotated">expand_more</i>
+              <span>Filtros</span>
+            </button>
+            
+            <!-- Active Filters Display -->
+            <div id="activeFiltersContainer" class="flex items-center space-x-2">
+              <div id="activeFilterFlags" class="flex flex-wrap gap-2">
+                <!-- Active filter flags will be displayed here -->
+              </div>
+              <button 
+                id="clearAllFilters" 
+                class="text-sm text-gray-500 hover:text-gray-700 hidden"
+                title="Limpar todos os filtros"
+              >
+                <i class="material-icons text-base">clear_all</i>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div class="mt-4 flex justify-between">
-          <button id="clearFilters" class="text-gray-600 hover:text-gray-800">
-            Limpar Filtros
-          </button>
-          <button
-            id="applyFilters"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
-          >
-            Aplicar
-          </button>
+        <!-- Filter Content (Collapsible) -->
+        <div id="filterContent" class="filter-content">
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <!-- Categoria -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Categoria</label
+                >
+                <select
+                  id="filterCategoria"
+                  class="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="">Todas</option>
+                  <option value="provas">Provas</option>
+                  <option value="trabalhos">Trabalhos</option>
+                  <option value="comunicados">Comunicados</option>
+                  <option value="noticias">Notícias</option>
+                  <option value="divulgacao">Divulgação</option>
+                </select>
+              </div>
+
+              <!-- Urgência -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Urgência</label
+                >
+                <select
+                  id="filterUrgencia"
+                  class="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="">Todas</option>
+                  <option value="alta">Alta</option>
+                  <option value="media">Média</option>
+                  <option value="baixa">Baixa</option>
+                </select>
+              </div>
+
+              <!-- Matéria -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Matéria</label
+                >
+                <select
+                  id="filterMateria"
+                  class="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="">Selecione a matéria</option>
+                  <option value="PROJETOS_INTEGRADOS_IV">
+                    PROJETOS INTEGRADOS IV
+                  </option>
+                  <option value="PROJETO_FINAL_DE_CURSO_I">
+                    PROJETO FINAL DE CURSO I
+                  </option>
+                  <option value="PROJETO_DE_VIDA_E_CARREIRA">
+                    PROJETO DE VIDA E CARREIRA
+                  </option>
+                  <option value="INTELIGENCIA_ARTIFICIAL">
+                    INTELIGÊNCIA ARTIFICIAL
+                  </option>
+                  <option value="AUDITORIA_SEGURANCA_E_PROTECAO_DA_INFORMACAO">
+                    AUDITORIA, SEGURANÇA E PROTEÇÃO DA INFORMAÇÃO
+                  </option>
+                  <option value="ANALISE_ECONOMICA_E_FINANCEIRA_DE_PROJETOS">
+                    ANÁLISE ECONÔMICA E FINANCEIRA DE PROJETOS
+                  </option>
+                  <option value="TOPICOS_ESPECIAIS_EM_SISTEMAS_DE_INFORMACAO_II">
+                    TÓPICOS ESPECIAIS EM SISTEMAS DE INFORMAÇÃO II
+                  </option>
+                  <option value="GERAL">Geral</option>
+                </select>
+              </div>
+
+              <!-- Dependência -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2"
+                  >Dependência</label
+                >
+                <select
+                  id="filterDependencia"
+                  class="w-full border border-gray-300 rounded-md px-3 py-2"
+                >
+                  <option value="">Todos</option>
+                  <option value="true">Dependência</option>
+                  <option value="false">Regular</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-4 flex justify-between">
+              <button id="clearFilters" class="text-gray-600 hover:text-gray-800">
+                Limpar Filtros
+              </button>
+              <button
+                id="applyFilters"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+              >
+                Aplicar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

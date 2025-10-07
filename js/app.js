@@ -4,6 +4,7 @@ import { DatabaseManager, AuthManager, Utils } from './firebase-config.js';
 $(document).ready(function() {
     let currentFilters = {};
     let showingHistory = false;
+    let filtersCollapsed = true; // Start collapsed by default
 
     // Inicialização
     init();
@@ -21,6 +22,9 @@ $(document).ready(function() {
             // Setup event listeners
             setupEventListeners();
             
+            // Initialize filters display
+            updateActiveFiltersDisplay();
+            
         } catch (error) {
             console.error('Erro na inicialização:', error);
             showError('Erro ao carregar dados. Verifique a conexão com o Firebase.');
@@ -33,6 +37,10 @@ $(document).ready(function() {
         // Filtros
         $('#applyFilters').click(applyFilters);
         $('#clearFilters').click(clearFilters);
+        $('#clearAllFilters').click(clearAllFilters);
+        
+        // Toggle filtros
+        $('#toggleFilters').click(toggleFiltersCollapse);
         
         // Toggle histórico
         $('#toggleHistorico').click(toggleHistorico);
@@ -235,12 +243,133 @@ $(document).ready(function() {
             }
         });
 
+        // Update active filters display
+        updateActiveFiltersDisplay();
+        
         loadAvisos();
     }
 
     function clearFilters() {
         $('#filterCategoria, #filterUrgencia, #filterMateria, #filterDependencia').val('');
         currentFilters = {};
+        updateActiveFiltersDisplay();
+        loadAvisos();
+    }
+
+    function clearAllFilters() {
+        clearFilters();
+    }
+
+    function toggleFiltersCollapse() {
+        filtersCollapsed = !filtersCollapsed;
+        const filterContent = $('#filterContent');
+        const toggleIcon = $('#filterToggleIcon');
+        
+        if (filtersCollapsed) {
+            filterContent.removeClass('expanded');
+            toggleIcon.addClass('rotated');
+        } else {
+            filterContent.addClass('expanded');
+            toggleIcon.removeClass('rotated');
+        }
+    }
+
+    function updateActiveFiltersDisplay() {
+        const flagsContainer = $('#activeFilterFlags');
+        const clearAllBtn = $('#clearAllFilters');
+        
+        flagsContainer.empty();
+        
+        const hasActiveFilters = Object.keys(currentFilters).length > 0;
+        
+        if (hasActiveFilters) {
+            clearAllBtn.removeClass('hidden');
+            
+            // Create flags for each active filter
+            Object.entries(currentFilters).forEach(([filterType, filterValue]) => {
+                const flag = createFilterFlag(filterType, filterValue);
+                flagsContainer.append(flag);
+            });
+        } else {
+            clearAllBtn.addClass('hidden');
+        }
+    }
+
+    function createFilterFlag(filterType, filterValue) {
+        const flagText = getFilterDisplayText(filterType, filterValue);
+        const flagClass = getFilterFlagClass(filterType, filterValue);
+        
+        const flag = $(`
+            <div class="filter-flag ${flagClass}" data-filter-type="${filterType}">
+                <span>${flagText}</span>
+                <div class="filter-flag-remove" data-filter-type="${filterType}">
+                    <i class="material-icons">close</i>
+                </div>
+            </div>
+        `);
+        
+        // Add click handler to remove individual filter
+        flag.find('.filter-flag-remove').click(function(e) {
+            e.stopPropagation();
+            removeFilter(filterType);
+        });
+        
+        return flag;
+    }
+
+    function getFilterDisplayText(filterType, filterValue) {
+        const displayTexts = {
+            categoria: {
+                provas: 'Provas',
+                trabalhos: 'Trabalhos', 
+                comunicados: 'Comunicados',
+                noticias: 'Notícias',
+                divulgacao: 'Divulgação'
+            },
+            urgencia: {
+                alta: 'Alta Urgência',
+                media: 'Média Urgência',
+                baixa: 'Baixa Urgência'
+            },
+            dependencia: {
+                'true': 'Dependência',
+                'false': 'Regular'
+            }
+        };
+
+        if (filterType === 'materia') {
+            // Format materia names
+            return filterValue.replace(/_/g, ' ').toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+
+        return displayTexts[filterType]?.[filterValue] || filterValue;
+    }
+
+    function getFilterFlagClass(filterType, filterValue) {
+        if (filterType === 'categoria') {
+            return `categoria-${filterValue}`;
+        }
+        if (filterType === 'urgencia') {
+            return `urgencia-${filterValue}`;
+        }
+        if (filterType === 'dependencia' && filterValue === 'true') {
+            return 'dependencia';
+        }
+        return '';
+    }
+
+    function removeFilter(filterType) {
+        // Remove from currentFilters
+        delete currentFilters[filterType];
+        
+        // Clear the select element
+        $(`#filter${filterType.charAt(0).toUpperCase() + filterType.slice(1)}`).val('');
+        
+        // Update display and reload
+        updateActiveFiltersDisplay();
         loadAvisos();
     }
 

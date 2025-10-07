@@ -19,6 +19,9 @@ $(document).ready(function() {
             // Carregar avisos
             await loadAvisos();
             
+            // Carregar matérias para o filtro
+            await loadMaterias();
+            
             // Setup event listeners
             setupEventListeners();
             
@@ -70,6 +73,24 @@ $(document).ready(function() {
             showError('Erro ao carregar avisos.');
         } finally {
             showLoading(false);
+        }
+    }
+
+    async function loadMaterias() {
+        try {
+            const materias = await DatabaseManager.getUniqueMatrias();
+            const selectMateria = $('#filterMateria');
+            
+            // Limpar opções existentes (exceto a primeira)
+            selectMateria.find('option:not(:first)').remove();
+            
+            // Adicionar matérias encontradas no banco
+            materias.forEach(materia => {
+                selectMateria.append(`<option value="${materia}">${materia}</option>`);
+            });
+            
+        } catch (error) {
+            console.error('Erro ao carregar matérias:', error);
         }
     }
 
@@ -337,12 +358,9 @@ $(document).ready(function() {
             }
         };
 
+        // Para matérias, usar o valor diretamente do banco
         if (filterType === 'materia') {
-            // Format materia names
-            return filterValue.replace(/_/g, ' ').toLowerCase()
-                .split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
+            return filterValue;
         }
 
         return displayTexts[filterType]?.[filterValue] || filterValue;

@@ -256,6 +256,28 @@ class DatabaseManager {
       throw error;
     }
   }
+
+  // Buscar todas as matérias únicas do banco de dados
+  static async getUniqueMatrias() {
+    try {
+      const q = query(collection(db, COLLECTIONS.AVISOS));
+      const querySnapshot = await getDocs(q);
+      const materias = new Set();
+
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.materia && data.materia.trim()) {
+          materias.add(data.materia.trim());
+        }
+      });
+
+      // Converter Set para Array e ordenar
+      return Array.from(materias).sort();
+    } catch (error) {
+      console.error("Erro ao buscar matérias: ", error);
+      throw error;
+    }
+  }
 }
 
 // Authentication Manager

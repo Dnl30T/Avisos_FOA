@@ -168,44 +168,44 @@ $(document).ready(function() {
         const nearDeadlineClass = isNearDeadline ? 'deadline-near' : '';
         
         const deadlineDisplay = aviso.deadline ? 
-            `<div class="text-sm text-gray-600 mt-2">
-                <i class="material-icons mr-2">schedule</i>
-                Prazo: ${Utils.formatDate(aviso.deadline)}
-                ${isNearDeadline ? '<i class="material-icons text-red-500 ml-2">warning</i>' : ''}
+            `<div class="text-xs sm:text-sm text-gray-600 mt-2 flex items-center">
+                <i class="material-icons mr-1 sm:mr-2 text-sm">schedule</i>
+                <span class="truncate">Prazo: ${Utils.formatDate(aviso.deadline)}</span>
+                ${isNearDeadline ? '<i class="material-icons text-red-500 ml-2 text-sm">warning</i>' : ''}
             </div>` : '';
 
         return $(`
             <div class="bg-white rounded-lg shadow-md border ${urgencyClass} ${nearDeadlineClass} hover:shadow-lg transition-shadow">
-                <div class="p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
+                        <div class="flex items-start space-x-2 sm:space-x-3 min-w-0 flex-1">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 ${categoryClass} rounded-full flex items-center justify-center">
-                                    <i class="${Utils.getCategoryIcon(aviso.categoria)} text-gray-700"></i>
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 ${categoryClass} rounded-full flex items-center justify-center">
+                                    <i class="${Utils.getCategoryIcon(aviso.categoria)} text-gray-700 text-sm sm:text-base"></i>
                                 </div>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">${aviso.titulo}</h3>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-900 break-words">${aviso.titulo}</h3>
+                                <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mt-1">
                                     <span class="capitalize">${aviso.categoria}</span>
                                     <span class="${Utils.getUrgencyColor(aviso.urgencia)} font-medium">
                                         ${Utils.getUrgencyText(aviso.urgencia)}
                                     </span>
-                                    <span>${aviso.materia}</span>
-                                    ${aviso.dependencia ? '<span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs">Dependência</span>' : ''}
+                                    <span class="truncate max-w-32 sm:max-w-none">${aviso.materia}</span>
+                                    ${aviso.dependencia ? '<span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs whitespace-nowrap">Dependência</span>' : ''}
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <p class="text-gray-700 mb-4">${aviso.descricao}</p>
+                    <p class="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 leading-relaxed">${aviso.descricao}</p>
                     
-                    ${aviso.informacoesAdicionais ? `<div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
-                        <p class="text-blue-700 text-sm">${aviso.informacoesAdicionais}</p>
+                    ${aviso.informacoesAdicionais ? `<div class="bg-blue-50 border-l-4 border-blue-400 p-3 sm:p-4 mb-3 sm:mb-4">
+                        <p class="text-blue-700 text-xs sm:text-sm leading-relaxed">${aviso.informacoesAdicionais}</p>
                     </div>` : ''}
                     
-                    <div class="flex items-center justify-between text-sm text-gray-500">
-                        <span>Criado em: ${Utils.formatDate(aviso.createdAt)}</span>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 gap-2 sm:gap-0">
+                        <span class="truncate">Criado em: ${Utils.formatDate(aviso.createdAt)}</span>
                         ${deadlineDisplay}
                     </div>
                 </div>
@@ -216,33 +216,33 @@ $(document).ready(function() {
     function createHistoricoCard(aviso) {
         return $(`
             <div class="bg-gray-50 rounded-lg shadow border-l-4 border-gray-400 opacity-75">
-                <div class="p-6">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
+                <div class="p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-start justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
+                        <div class="flex items-start space-x-2 sm:space-x-3 min-w-0 flex-1">
                             <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                                    <i class="${Utils.getCategoryIcon(aviso.categoria)} text-gray-600"></i>
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <i class="${Utils.getCategoryIcon(aviso.categoria)} text-gray-600 text-sm sm:text-base"></i>
                                 </div>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-700">${aviso.titulo}</h3>
-                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <div class="min-w-0 flex-1">
+                                <h3 class="text-base sm:text-lg font-semibold text-gray-700 break-words">${aviso.titulo}</h3>
+                                <div class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mt-1">
                                     <span class="capitalize">${aviso.categoria}</span>
-                                    <span>${aviso.materia}</span>
-                                    ${aviso.dependencia ? '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs">Dependência</span>' : ''}
+                                    <span class="truncate max-w-32 sm:max-w-none">${aviso.materia}</span>
+                                    ${aviso.dependencia ? '<span class="bg-gray-200 text-gray-700 px-2 py-1 rounded-full text-xs whitespace-nowrap">Dependência</span>' : ''}
                                 </div>
                             </div>
                         </div>
-                                                <a href="#" class="text-gray-500 hover:text-gray-700" data-filter="historico">
-                            <i class="material-icons mr-1">history</i>Histórico
+                        <a href="#" class="text-gray-500 hover:text-gray-700 text-sm sm:text-base flex-shrink-0" data-filter="historico">
+                            <i class="material-icons mr-1 text-sm sm:text-base">history</i>Histórico
                         </a>
                     </div>
                     
-                    <p class="text-gray-600 mb-4">${aviso.descricao}</p>
+                    <p class="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 leading-relaxed">${aviso.descricao}</p>
                     
-                    <div class="flex items-center justify-between text-sm text-gray-500">
-                        <span>Movido para histórico: ${Utils.formatDate(aviso.movedToHistoryAt)}</span>
-                        ${aviso.deadline ? `<span>Deadline era: ${Utils.formatDate(aviso.deadline)}</span>` : ''}
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-gray-500 gap-2 sm:gap-0">
+                        <span class="truncate">Movido para histórico: ${Utils.formatDate(aviso.movedToHistoryAt)}</span>
+                        ${aviso.deadline ? `<span class="truncate">Deadline era: ${Utils.formatDate(aviso.deadline)}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -418,10 +418,10 @@ $(document).ready(function() {
     function showError(message) {
         // Criar toast de erro
         const toast = $(`
-            <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            <div class="fixed top-4 right-4 left-4 sm:left-auto bg-red-500 text-white px-4 py-3 sm:px-6 rounded-lg shadow-lg z-50 max-w-sm mx-auto sm:mx-0">
                 <div class="flex items-center">
-                    <i class="material-icons mr-2">error</i>
-                    <span>${message}</span>
+                    <i class="material-icons mr-2 text-base sm:text-lg">error</i>
+                    <span class="text-sm sm:text-base">${message}</span>
                 </div>
             </div>
         `);

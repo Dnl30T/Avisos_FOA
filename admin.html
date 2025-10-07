@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Avisos da Turma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .admin-nav-item.active { 
+            background-color: #3b82f6; 
+            color: white; 
+        }
+        .status-active { border-left: 4px solid #10b981; }
+        .status-hidden { border-left: 4px solid #f59e0b; }
+        .status-expired { border-left: 4px solid #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg max-w-md w-full mx-4">
+            <div class="text-center mb-6">
+                <i class="material-icons text-blue-600 text-6xl mb-4">security</i>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Acesso Administrativo</h2>
+                <p class="text-gray-600">Faça login para acessar o painel de administração</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="email" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Senha</label>
+                    <input type="password" id="password" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition">
+                    <i class="material-icons mr-2">login</i>Entrar
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <a href="index.html" class="text-blue-600 hover:text-blue-700 text-sm">
+                    <i class="material-icons mr-1">arrow_back</i>Voltar para avisos
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Painel Administrativo</h1>
+                        <p class="text-sm text-gray-600" id="adminInfo">Carregando...</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <a href="index.html" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                            <i class="material-icons mr-2">visibility</i>Ver Avisos
+                        </a>
+                        <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition">
+                            <i class="material-icons mr-2">logout</i>Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="bg-white rounded-lg shadow p-1">
+                <nav class="flex space-x-1">
+                    <button class="admin-nav-item active px-4 py-2 rounded-md transition" data-tab="criar">
+                        <i class="material-icons mr-2">add</i>Criar Aviso
+                    </button>
+                    <button class="admin-nav-item px-4 py-2 rounded-md transition hover:bg-gray-100" data-tab="ativos">
+                        <i class="material-icons mr-2">list</i>Avisos Ativos
+                    </button>
+                    <button class="admin-nav-item px-4 py-2 rounded-md transition hover:bg-gray-100" data-tab="ocultos">
+                        <i class="material-icons mr-2">visibility_off</i>Avisos Ocultos
+                    </button>
+                    <button class="admin-nav-item px-4 py-2 rounded-md transition hover:bg-gray-100" data-tab="vencidos">
+                        <i class="material-icons mr-2">history</i>Vencidos
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="mt-6">
+                <!-- Tab: Criar Aviso -->
+                <div id="tab-criar" class="tab-content">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold mb-6">Criar Novo Aviso</h2>
+                        
+                        <form id="avisoForm" class="space-y-6">
+                            <!-- Título -->
+                            <div>
+                                <label for="titulo" class="block text-sm font-medium text-gray-700 mb-2">Título *</label>
+                                <input type="text" id="titulo" name="titulo" required 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Digite o título do aviso">
+                            </div>
+
+                            <!-- Descrição -->
+                            <div>
+                                <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição *</label>
+                                <textarea id="descricao" name="descricao" required rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Descreva o aviso detalhadamente"></textarea>
+                            </div>
+
+                            <!-- Categoria e Urgência -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="categoria" class="block text-sm font-medium text-gray-700 mb-2">Categoria *</label>
+                                    <select id="categoria" name="categoria" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Selecione uma categoria</option>
+                                        <option value="provas">Provas</option>
+                                        <option value="trabalhos">Trabalhos</option>
+                                        <option value="comunicados">Comunicados</option>
+                                        <option value="noticias">Notícias</option>
+                                        <option value="divulgacao">Divulgação</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="urgencia" class="block text-sm font-medium text-gray-700 mb-2">Urgência *</label>
+                                    <select id="urgencia" name="urgencia" required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="">Selecione a urgência</option>
+                                        <option value="baixa">Baixa</option>
+                                        <option value="media">Média</option>
+                                        <option value="alta">Alta</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Matéria -->
+                            <div>
+                                <label for="materia" class="block text-sm font-medium text-gray-700 mb-2">Matéria</label>
+                                <input type="text" id="materia" name="materia"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                       placeholder="Ex: Matemática, História, etc.">
+                            </div>
+
+                            <!-- Dependência -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Requer Dependência?</label>
+                                <div class="flex space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="dependencia" value="false" checked
+                                               class="form-radio text-blue-600">
+                                        <span class="ml-2">Não</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="dependencia" value="true"
+                                               class="form-radio text-blue-600">
+                                        <span class="ml-2">Sim</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Deadline -->
+                            <div>
+                                <label class="flex items-center mb-3">
+                                    <input type="checkbox" id="hasDeadline" class="form-checkbox text-blue-600">
+                                    <span class="ml-2 text-sm font-medium text-gray-700">Definir prazo limite</span>
+                                </label>
+                                
+                                <div id="deadlineFields" class="grid grid-cols-2 gap-4 hidden">
+                                    <div>
+                                        <label for="deadlineDate" class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                                        <input type="date" id="deadlineDate" name="deadlineDate"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label for="deadlineTime" class="block text-sm font-medium text-gray-700 mb-1">Hora</label>
+                                        <input type="time" id="deadlineTime" name="deadlineTime"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informações Adicionais -->
+                            <div>
+                                <label for="informacoesAdicionais" class="block text-sm font-medium text-gray-700 mb-2">Informações Adicionais</label>
+                                <textarea id="informacoesAdicionais" name="informacoesAdicionais" rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                          placeholder="Informações extras, links, observações..."></textarea>
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="flex justify-end space-x-4">
+                                <button type="button" id="clearForm" 
+                                        class="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                                    <i class="material-icons mr-2">clear</i>Limpar
+                                </button>
+                                <button type="submit"
+                                        class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                                    <i class="material-icons mr-2">save</i>Salvar Aviso
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Tab: Avisos Ativos -->
+                <div id="tab-ativos" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold mb-6">Avisos Ativos</h2>
+                        <div id="avisoAtivesList" class="space-y-4">
+                            <!-- Avisos serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Avisos Ocultos -->
+                <div id="tab-ocultos" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold mb-6">Avisos Ocultos</h2>
+                        <div id="avisoOcultosList" class="space-y-4">
+                            <!-- Avisos serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Avisos Vencidos -->
+                <div id="tab-vencidos" class="tab-content hidden">
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-xl font-semibold mb-6">Avisos Vencidos</h2>
+                        <div id="avisoVencidosList" class="space-y-4">
+                            <!-- Avisos serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white p-8 rounded-lg max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-semibold">Editar Aviso</h3>
+                <button id="closeEditModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="material-icons text-xl">close</i>
+                </button>
+            </div>
+            
+            <form id="editForm">
+                <input type="hidden" id="editAvisoId">
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="editTitulo" class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+                        <input type="text" id="editTitulo" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label for="editDescricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                        <textarea id="editDescricao" required rows="4"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="editCategoria" class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                            <select id="editCategoria" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="provas">Provas</option>
+                                <option value="trabalhos">Trabalhos</option>
+                                <option value="comunicados">Comunicados</option>
+                                <option value="noticias">Notícias</option>
+                                <option value="divulgacao">Divulgação</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="editUrgencia" class="block text-sm font-medium text-gray-700 mb-2">Urgência</label>
+                            <select id="editUrgencia" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="baixa">Baixa</option>
+                                <option value="media">Média</option>
+                                <option value="alta">Alta</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" id="cancelEdit" class="px-4 py-2 text-gray-500 hover:text-gray-700">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+                        Salvar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span class="text-gray-700">Carregando...</span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>

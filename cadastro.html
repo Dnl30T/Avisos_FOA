@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos da Turma - Cadastro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">Cadastrar Novo Aviso</h1>
+                <a href="index.html" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition">
+                    <i class="fas fa-arrow-left mr-2"></i>Voltar
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Form -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <form id="avisoForm">
+                <!-- Título -->
+                <div class="mb-6">
+                    <label for="titulo" class="block text-sm font-medium text-gray-700 mb-2">
+                        Título <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="titulo" name="titulo" required
+                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                           placeholder="Digite o título do aviso">
+                </div>
+
+                <!-- Descrição -->
+                <div class="mb-6">
+                    <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">
+                        Descrição <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="descricao" name="descricao" rows="4" required
+                              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Descreva o aviso..."></textarea>
+                </div>
+
+                <!-- Categoria e Urgência -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="categoria" class="block text-sm font-medium text-gray-700 mb-2">
+                            Categoria <span class="text-red-500">*</span>
+                        </label>
+                        <select id="categoria" name="categoria" required
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Selecione uma categoria</option>
+                            <option value="provas">Provas</option>
+                            <option value="trabalhos">Trabalhos</option>
+                            <option value="comunicados">Comunicados</option>
+                            <option value="noticias">Notícias</option>
+                            <option value="divulgacao">Divulgação</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="urgencia" class="block text-sm font-medium text-gray-700 mb-2">
+                            Urgência <span class="text-red-500">*</span>
+                        </label>
+                        <select id="urgencia" name="urgencia" required
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Selecione a urgência</option>
+                            <option value="alta">Alta (Crítico)</option>
+                            <option value="media">Média (Importante)</option>
+                            <option value="baixa">Baixa (Informativo)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Matéria e Dependência -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="materia" class="block text-sm font-medium text-gray-700 mb-2">
+                            Matéria <span class="text-red-500">*</span>
+                        </label>
+                        <select id="materia" name="materia" required
+                                class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Selecione a matéria</option>
+                            <option value="PROJETOS_INTEGRADOS_IV">PROJETOS INTEGRADOS IV</option>
+                            <option value="PROJETO_FINAL_DE_CURSO_I">PROJETO FINAL DE CURSO I</option>
+                            <option value="PROJETO_DE_VIDA_E_CARREIRA">PROJETO DE VIDA E CARREIRA</option>
+                            <option value="INTELIGENCIA_ARTIFICIAL">INTELIGÊNCIA ARTIFICIAL</option>
+                            <option value="AUDITORIA_SEGURANCA_E_PROTECAO_DA_INFORMACAO">AUDITORIA, SEGURANÇA E PROTEÇÃO DA INFORMAÇÃO</option>
+                            <option value="ANALISE_ECONOMICA_E_FINANCEIRA_DE_PROJETOS">ANÁLISE ECONÔMICA E FINANCEIRA DE PROJETOS</option>
+                            <option value="TOPICOS_ESPECIAIS_EM_SISTEMAS_DE_INFORMACAO_II">TÓPICOS ESPECIAIS EM SISTEMAS DE INFORMAÇÃO II</option>
+                            <option value="GERAL">Geral</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Disciplina
+                        </label>
+                        <div class="flex items-center space-x-6">
+                            <label class="flex items-center">
+                                <input type="radio" name="dependencia" value="false" checked
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-700">Regular</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="dependencia" value="true"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                <span class="ml-2 text-sm text-gray-700">Dependência</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deadline -->
+                <div class="mb-6">
+                    <div class="flex items-center mb-2">
+                        <input type="checkbox" id="hasDeadline" name="hasDeadline"
+                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="hasDeadline" class="ml-2 text-sm font-medium text-gray-700">
+                            Este aviso tem deadline
+                        </label>
+                    </div>
+                    
+                    <div id="deadlineFields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 hidden">
+                        <div>
+                            <label for="deadlineDate" class="block text-sm font-medium text-gray-700 mb-2">
+                                Data do Deadline
+                            </label>
+                            <input type="date" id="deadlineDate" name="deadlineDate"
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="deadlineTime" class="block text-sm font-medium text-gray-700 mb-2">
+                                Hora do Deadline
+                            </label>
+                            <input type="time" id="deadlineTime" name="deadlineTime"
+                                   class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Informações Adicionais -->
+                <div class="mb-8">
+                    <label for="informacoesAdicionais" class="block text-sm font-medium text-gray-700 mb-2">
+                        Informações Adicionais
+                    </label>
+                    <textarea id="informacoesAdicionais" name="informacoesAdicionais" rows="3"
+                              class="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-blue-500 focus:border-blue-500"
+                              placeholder="Adicione informações extras se necessário..."></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="window.location.href='index.html'"
+                            class="px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition">
+                        <i class="fas fa-save mr-2"></i>Salvar Aviso
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-8 rounded-lg max-w-md mx-4">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
+                    <i class="fas fa-check text-green-600 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Aviso Cadastrado!</h3>
+                <p class="text-sm text-gray-500 mb-6">O aviso foi salvo com sucesso.</p>
+                <div class="flex justify-center space-x-4">
+                    <button id="addAnother" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md">
+                        Cadastrar Outro
+                    </button>
+                    <button id="goToList" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md">
+                        Ver Avisos
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p class="mt-4 text-center">Salvando...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/cadastro.js"></script>
+</body>
+</html>
